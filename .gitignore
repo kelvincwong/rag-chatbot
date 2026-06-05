@@ -16,6 +16,10 @@ __pycache__/
 # OS files
 .DS_Store
 
+# data (raw + processed large outputs)
+app/data/raw/
+app/data/processed/
+
 # FAISS / vector indexes (optional but recommended)
 *.index
 *.faiss
