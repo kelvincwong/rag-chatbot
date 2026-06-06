@@ -193,6 +193,32 @@ def remove_boilerplate(text, boilerplate_set):
         l for l in lines
         if l and l not in boilerplate_set
     ])
+
+def infer_doc_type(url, title, text):
+    if any(k in title for k in ["简介", "概况", "介绍"]):
+        return "entity_overview"
+
+    if "index" in url or url.endswith("/"):
+        return "entity_homepage"
+
+    if any(k in text for k in ["教育背景", "博士", "教授", "工作履历"]):
+        return "faculty_profile"
+
+    if "研究中心" in title or "实验室" in title:
+        return "research_page"
+
+    if any(k in title for k in ["新闻", "动态", "通知"]):
+        return "news"
+
+    return "other"
+
+def is_homepage(url, title):
+    return (
+        "xygk" in url or
+        "index" in url or
+        "简介" in title or
+        title.strip().endswith("清华大学软件学院")
+    )
 class THSSCrawler:
     def __init__(self, max_pages=1000, delay=0.5):
         self.visited = set()
@@ -347,6 +373,9 @@ class THSSCrawler:
         content = extract_main_content(soup)
         content = normalize_text(content)
 
+        doc_type = infer_doc_type(url, title, content)
+        homepage_flag = is_homepage(url, title)
+
         # images
         images = []
         for img in soup.find_all("img", src=True):
@@ -364,7 +393,10 @@ class THSSCrawler:
             "title": title,
             "date": date,
             "content": content,
-            "images": images
+            "images": images,
+            "doc_type": doc_type,
+            "entity": "清华大学软件学院",
+            "is_entity_homepage": homepage_flag
         }
 
     # ---------------------------
