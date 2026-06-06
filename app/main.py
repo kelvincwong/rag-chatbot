@@ -4,9 +4,9 @@ from pydantic import BaseModel
 from scripts.query import retrieve
 from app.llm import generate_answer
 from app.auth import authenticate
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="RAG Chatbot API")
-
 class ChatRequest(BaseModel):
     message: str
 
@@ -26,3 +26,5 @@ def chat(req: ChatRequest, user: str = Depends(authenticate)):
             for r in results
         ]
     }
+
+app.mount("/ui", StaticFiles(directory="app/static", html=True), name="static")
