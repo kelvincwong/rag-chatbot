@@ -6,3 +6,5 @@ python-dotenv
 sentence-transformers
 faiss-cpu
 tiktoken
+fastapi 
+uvicorn
