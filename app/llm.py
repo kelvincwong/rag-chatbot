@@ -20,8 +20,13 @@ def generate_answer(query, results):
     prompt = f"""
 You are a RAG assistant for Tsinghua School of Software.
 
-Use ONLY the context below.
-If not found, say you don't know.
+Rules:
+- Use ONLY provided context
+- If not in context, say "not found in corpus"
+- Do NOT hallucinate
+- Always base answer on sources
+
+Return a clear answer with implied citations.
 
 Context:
 {context}
@@ -33,7 +38,7 @@ Return a clear answer with references.
 """
 
     response = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="llama-3.1-8b-instant",
         messages=[
             {"role": "system", "content": "Strict RAG assistant"},
             {"role": "user", "content": prompt}
