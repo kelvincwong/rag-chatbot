@@ -266,7 +266,7 @@ class THSSCrawler:
                 content_type = resp.headers.get("Content-Type", "")
 
                 if "text/html" not in content_type.lower():
-                    print(f"Skipping non-HTML content: {url} ({content_type})")
+                    #print(f"Skipping non-HTML content: {url} ({content_type})")
                     return None
 
                 resp.encoding = resp.apparent_encoding or resp.encoding or "utf-8"
@@ -423,7 +423,7 @@ class THSSCrawler:
                     self.frontier_set.add(link)
 
             pbar.update(1)
-            time.sleep(random.uniform(0.3, 0.8))
+            time.sleep(random.uniform(1, 1.5))
 
         pbar.close()
 
@@ -442,5 +442,5 @@ class THSSCrawler:
 
 
 if __name__ == "__main__":
-    crawler = THSSCrawler(max_pages=850, delay=0.5)
+    crawler = THSSCrawler(max_pages=850, delay=1)
     crawler.run()
