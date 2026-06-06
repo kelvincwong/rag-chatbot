@@ -5,3 +5,5 @@ tqdm
 python-dotenv
 sentence-transformers
 faiss-cpu
+hashlib
+tiktoken
