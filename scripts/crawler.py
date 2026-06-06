@@ -233,8 +233,8 @@ class THSSCrawler:
 
         retry = Retry(
             total=3,
-            backoff_factor=1,
-            status_forcelist=[429, 500, 502, 503, 504],
+            backoff_factor=5,
+            status_forcelist=[500, 502, 503, 504],
             allowed_methods=["GET"]
         )
 
@@ -285,8 +285,14 @@ class THSSCrawler:
                 )
 
                 # handle errors explicitly
+                if resp.status_code == 429:
+                    wait_time = 60 * (attempt + 1)
+                    print(f"429 received. Sleeping {wait_time}s")
+                    time.sleep(wait_time)
+                    continue
+
                 if resp.status_code >= 400:
-                    #print(f"HTTP {resp.status_code} for {url} ignoring content")
+                    print(f"HTTP {resp.status_code} for {url} ignoring content")
                     return None
 
                 content_type = resp.headers.get("Content-Type", "")
@@ -428,6 +434,11 @@ class THSSCrawler:
 
             self.visited.add(url)
 
+            if len(self.visited) % 25 == 0:
+                pause = random.uniform(15, 45)
+                print(f"Long pause: {pause:.1f}s")
+                time.sleep(pause)
+
             page_data = self.extract_page(html, url)
 
             soup = BeautifulSoup(html, "html.parser")
@@ -455,7 +466,7 @@ class THSSCrawler:
                     self.frontier_set.add(link)
 
             pbar.update(1)
-            time.sleep(random.uniform(1, 1.5))
+            time.sleep(random.uniform(self.delay, self.delay * 2))
 
         pbar.close()
 
@@ -472,7 +483,6 @@ class THSSCrawler:
             f"Skipped: {self.skipped_pages}"
         )
 
-
 if __name__ == "__main__":
-    crawler = THSSCrawler(max_pages=850, delay=1)
+    crawler = THSSCrawler(max_pages=850, delay=2)
     crawler.run()
