@@ -26,11 +26,11 @@ Rules:
 - Do NOT hallucinate
 - Always base answer on sources
 - Do not copy text directly. Summarize and rephrase in natural language.
+- Do not include citations, sources, or references in the answer.
+- All sources will be provided separately by the system.
 
 Constraints:
 Do not copy text directly. Summarize and rephrase in natural language.
-
-Return a clear answer with implied citations.
 
 Context:
 {context}
