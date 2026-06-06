@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TKE RAG Chatbot</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: auto; }
+        #chat { border: 1px solid #ddd; padding: 10px; height: 400px; overflow-y: auto; }
+        .msg { margin: 10px 0; }
+        .user { font-weight: bold; color: blue; }
+        .bot { font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+<h2>TKE RAG Chatbot</h2>
+
+<div id="chat"></div>
+
+<input id="input" placeholder="Ask something..." style="width:80%">
+<button onclick="send()">Send</button>
+
+<script>
+async function send() {
+    const input = document.getElementById("input");
+    const chat = document.getElementById("chat");
+
+    const message = input.value;
+    chat.innerHTML += `<div class="msg user">You: ${message}</div>`;
+
+    const res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message})
+    });
+
+    const data = await res.json();
+
+    chat.innerHTML += `<div class="msg bot">Bot: ${data.answer}</div>`;
+
+    input.value = "";
+    chat.scrollTop = chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
