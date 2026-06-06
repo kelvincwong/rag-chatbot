@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from scripts.query import retrieve
+from app.llm import generate_answer
 
 app = FastAPI(title="RAG Chatbot API")
 
@@ -14,7 +15,13 @@ def chat(req: ChatRequest):
 
     results = retrieve(query)
 
+    answer = generate_answer(query, results)
+
     return {
         "query": query,
-        "results": results
+        "answer": answer,
+        "sources": [
+            {"title": r["title"], "url": r["url"]}
+            for r in results
+        ]
     }
