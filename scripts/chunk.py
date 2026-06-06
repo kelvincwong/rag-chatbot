@@ -25,7 +25,7 @@ def load_jsonl(path):
 # ---------------------------
 def split_sentences(text):
     text = text.replace("\n", " ")
-    sentences = re.split(r"(?<=[。！？.!?])", text)
+    sentences = re.split(r"(?<=[。！？.!?])\s*", text)
     return [s.strip() for s in sentences if s.strip()]
 
 
@@ -39,14 +39,14 @@ def chunk_sentences(sentences, max_size=MAX_CHUNK_SIZE):
     current_len = 0
 
     for sent in sentences:
-        sent_len = len(sent)
+        sent_len = len(sent.split())
 
         # if adding sentence exceeds limit, flush chunk
         if current_len + sent_len > max_size and current:
             chunks.append("".join(current))
-            
-            # overlap: keep last N sentences
-            current = current[-OVERLAP_SENTENCES:]
+
+            overlap = current[-OVERLAP_SENTENCES:]
+            current = overlap.copy()
             current_len = sum(len(s) for s in current)
 
         current.append(sent)
