@@ -35,7 +35,19 @@ async function send() {
 
     const data = await res.json();
 
-    chat.innerHTML += `<div class="msg bot">Bot: ${data.answer}</div>`;
+    let html = `<div class="msg bot">Bot: ${data.answer}</div>`;
+
+    if (data.sources && data.sources.length > 0) {
+        html += `<div class="msg bot"><b>Sources:</b><ul>`;
+
+        data.sources.forEach(s => {
+            html += `<li><a href="${s.url}" target="_blank">${s.title}</a></li>`;
+        });
+
+        html += `</ul></div>`;
+    }
+
+    chat.innerHTML += html;
 
     input.value = "";
     chat.scrollTop = chat.scrollHeight;
