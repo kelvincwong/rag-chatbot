@@ -43,7 +43,7 @@ def main():
     print("Loading embedding model...")
     model = SentenceTransformer(MODEL_NAME)
 
-    texts = [c["text"] for c in chunks]
+    texts = [c["embedding_text"] for c in chunks]
 
     print("Generating embeddings...")
     embeddings = model.encode(
@@ -65,7 +65,14 @@ def main():
     faiss.write_index(index, INDEX_FILE)
 
     print("Saving metadata...")
-    save_jsonl(META_FILE, chunks)
+
+    meta = []
+
+    for i, c in enumerate(chunks):
+        c["faiss_id"] = i
+        meta.append(c)
+
+    save_jsonl(META_FILE, meta)
 
     print("Done.")
 
