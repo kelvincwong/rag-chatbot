@@ -134,13 +134,12 @@ def main():
                 "source_url": url,
 
                 "text": chunk,
-                "embedding_text": f"""
-                Entity: {entity}
-                Title: {title}
-                DocType: {doc_type}
-
-                {chunk}
-                """.strip()
+                "embedding_text": (
+                    f"Entity: {entity}\n"
+                    f"Title: {title}\n"
+                    f"DocType: {doc_type}\n\n"
+                    f"{chunk}"
+                )
             })
 
     write_jsonl(OUTPUT_FILE, all_chunks)
