@@ -25,6 +25,10 @@ Rules:
 - If not in context, say "not found in corpus"
 - Do NOT hallucinate
 - Always base answer on sources
+- Do not copy text directly. Summarize and rephrase in natural language.
+
+Constraints:
+Do not copy text directly. Summarize and rephrase in natural language.
 
 Return a clear answer with implied citations.
 
