@@ -2,84 +2,119 @@
 
 This project is a Retrieval-Augmented Generation (RAG) system that crawls, processes, and enables question-answering over the Tsinghua School of Software website.
 
-The system ingests website content, builds a searchable vector database, and uses an LLM to generate answers with citations from the original source pages.
+The system ingests website content, builds a searchable vector database, and uses an LLM to generate grounded answers with citations from the original source pages.
 
 ---
 
-## Project Objective
+## Key Features
 
-Build a production-style RAG chatbot that can:
-- Crawl a full website corpus (~850 pages)
-- Extract and structure article content
-- Support semantic search over documents
-- Generate grounded answers using retrieved context
-- Provide citation-backed responses
-
----
-
-## Deliverables
-
-### Phase 1
-- Website crawler for full-site data extraction
-- https://www.thss.tsinghua.edu.cn/robots.txt (dose not exist)
-- Filtering and extraction of article pages (~650 articles)
-- Structured JSON data format with:
-  - URL
-  - Title
-  - Content
-  - Date (if available)
-  - Images (optional metadata)
-
-### Phase 2
-- Text chunking strategy for RAG ingestion
-- Embedding generation pipeline
-- Vector database setup (FAISS)
-- Retrieval system implementation
-
-### Phase 3
-- LLM-based response generation
-- Citation-based answer formatting
-- FastAPI backend for chatbot API
-- Authentication layer
-- Simple web chat UI (Streamlit or similar)
-- Deployment (Vercel / Railway / VPS)
+- Full-site crawler (~850 pages)
+- Semantic search using FAISS
+- SentenceTransformer embeddings
+- Bilingual support (Chinese + English)
+- LLM-based answer generation
+- Source-cited responses
+- Authentication-protected chatbot
+- Web-based chat UI
 
 ---
 
-## System Architecture (Planned)
+## System Architecture
 
-Crawler → Ingestion → Chunking → Embeddings → Vector Store (FAISS) → Retrieval → LLM → Chat UI
+Crawler → Ingestion → Chunking → Embeddings → Vector Store (FAISS) → Retrieval → LLM → Answer + Sources → UI
 
 ---
 
 ## Tech Stack
 
 - Python 3.11
+- FastAPI (backend API)
 - BeautifulSoup (web crawling)
 - Requests (HTTP client)
 - Sentence Transformers (embeddings)
-- FAISS (vector similarity search)
-- FastAPI (backend API)
-- Streamlit (chat UI)
-- dotenv (configuration management)
+- FAISS (vector search)
+- HTML / JavaScript (frontend UI)
 
 ---
 
-## How to Run (WIP)
+## How to Run
 
-> Instructions will be updated as system components are completed.
+### Install dependencies
+
+pip install -r requirements.txt
+
+### Start the server
+
+uvicorn app.main:app --reload
+
+### Open the application
+
+- Chat UI: http://127.0.0.1:8000/ui  
+- API Docs: http://127.0.0.1:8000/docs  
+
+---
+
+## API Endpoints
+
+### POST /chat
+
+Send a user query to the RAG system.
+
+#### Request
+
+{
+  "message": "What is the School of Software?"
+}
+
+#### Response
+
+{
+  "query": "What is the School of Software?",
+  "answer": "The School of Software at Tsinghua University is ...",
+  "sources": [
+    {
+      "title": "Official Article Title",
+      "url": "https://www.thss.tsinghua.edu.cn/..."
+    }
+  ]
+}
+
+---
+
+## Authentication
+
+The chatbot is protected using simple HTTP Basic Authentication.
+
+### Demo credentials
+
+username: admin  
+password: admin123  
 
 ---
 
 ## Data Source
 
-- Tsinghua School of Software website
-- Full-site crawl respecting robots.txt and rate limiting (1–2 req/sec)
+- Tsinghua School of Software website: https://www.thss.tsinghua.edu.cn
+- Full-site crawl with polite rate limiting (1–2 requests/second)
+- Structured extraction of article pages (news, announcements, faculty info)
+- Missing or unverified robots.txt handling
 
 ---
 
-## Notes
+## System Notes
 
-- This project is being built incrementally as part of a technical assessment.
-- The RAG pipeline is being implemented from scratch (no full framework wrappers used).
-- All crawling respects ethical scraping practices.
+- Built from scratch without using full RAG frameworks
+- All crawling respects ethical scraping practices
+- LLM outputs are grounded using retrieved context from FAISS index
+- Sources are returned separately and rendered in the UI
+
+---
+
+## Future Improvements
+
+- Add reranking model for better retrieval accuracy
+- Improve UI (React-based chat interface)
+- Add streaming LLM responses
+- Improve chunking strategy for long documents
+- Add hybrid search (BM25 + vector search)
+- Improve multilingual embedding performance
