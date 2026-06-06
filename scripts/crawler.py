@@ -260,7 +260,7 @@ class THSSCrawler:
 
                 # handle errors explicitly
                 if resp.status_code >= 400:
-                    print(f"HTTP {resp.status_code} for {url} ignoring content")
+                    #print(f"HTTP {resp.status_code} for {url} ignoring content")
                     return None
 
                 content_type = resp.headers.get("Content-Type", "")
@@ -442,5 +442,5 @@ class THSSCrawler:
 
 
 if __name__ == "__main__":
-    crawler = THSSCrawler(max_pages=30, delay=0.5)
+    crawler = THSSCrawler(max_pages=850, delay=0.5)
     crawler.run()
