@@ -21,6 +21,7 @@ Build a production-style RAG chatbot that can:
 
 ### Phase 1
 - Website crawler for full-site data extraction
+- https://www.thss.tsinghua.edu.cn/robots.txt (dose not exist)
 - Filtering and extraction of article pages (~650 articles)
 - Structured JSON data format with:
   - URL
