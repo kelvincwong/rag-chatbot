@@ -3,3 +3,5 @@ urllib3
 beautifulsoup4
 tqdm
 python-dotenv
+sentence-transformers
+FAISS
