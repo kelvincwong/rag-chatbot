@@ -11,7 +11,7 @@ from tqdm import tqdm
 from dotenv import load_dotenv
 import re
 import random
-
+from collections import Counter
 
 load_dotenv()
 
@@ -155,6 +155,44 @@ def normalize_text(text: str) -> str:
     text = re.sub(r"\n{3,}", "\n\n", text)
 
     return text
+
+def build_boilerplate_filter(pages):
+
+    counter = Counter()
+
+    for page in pages:
+        lines = [l.strip() for l in page["content"].split("\n") if l.strip()]
+
+        for line in lines:
+            counter[line] += 1
+
+    total_pages = len(pages)
+
+    boilerplate = set()
+
+    for line, freq in counter.items():
+
+        # 1. appears in many pages
+        freq_signal = freq / max(total_pages, 1)
+
+        # 2. looks like navigation text
+        nav_signal = (
+            len(line) <= 8 and              # very short
+            not re.search(r"[。！？,.]", line) and  # no sentence punctuation
+            not re.search(r"\d{2,}", line)          # no long numbers
+        )
+
+        if freq_signal > 0.2 and nav_signal:
+            boilerplate.add(line)
+
+    return boilerplate
+
+def remove_boilerplate(text, boilerplate_set):
+    lines = [l.strip() for l in text.split("\n")]
+    return "\n".join([
+        l for l in lines
+        if l and l not in boilerplate_set
+    ])
 class THSSCrawler:
     def __init__(self, max_pages=1000, delay=0.5):
         self.visited = set()
@@ -165,6 +203,7 @@ class THSSCrawler:
         self.session = requests.Session()
         self.saved_pages = 0
         self.skipped_pages = 0
+        self.raw_pages = []
 
         retry = Retry(
             total=3,
@@ -368,7 +407,7 @@ class THSSCrawler:
             )
 
             if is_article:
-                self.save(page_data)
+                self.raw_pages.append(page_data)
                 self.saved_pages += 1
             else:
                 self.skipped_pages += 1
@@ -387,6 +426,13 @@ class THSSCrawler:
             time.sleep(random.uniform(0.3, 0.8))
 
         pbar.close()
+
+        boilerplate_lines = build_boilerplate_filter(self.raw_pages)
+
+        for page in self.raw_pages:
+            page["content"] = remove_boilerplate(page["content"], boilerplate_lines)
+            self.save(page)
+
         print(
             f"Crawling complete. "
             f"Fetched: {len(self.visited)}, "
