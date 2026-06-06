@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 
 from scripts.query import retrieve
 from app.llm import generate_answer
+from app.auth import authenticate
 
 app = FastAPI(title="RAG Chatbot API")
 
@@ -10,7 +11,7 @@ class ChatRequest(BaseModel):
     message: str
 
 @app.post("/chat")
-def chat(req: ChatRequest):
+def chat(req: ChatRequest, user: str = Depends(authenticate)):
     query = req.message
 
     results = retrieve(query)
