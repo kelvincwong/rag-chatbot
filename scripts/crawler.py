@@ -135,6 +135,26 @@ def is_article_page(soup, url, text):
         score -= 20
 
     return score >= 40, score
+
+def normalize_text(text: str) -> str:
+    import re
+
+    # 1. normalize line endings
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    # 2. split + strip lines
+    lines = [line.strip() for line in text.split("\n")]
+
+    # 3. remove empty lines
+    lines = [line for line in lines if line]
+
+    # 4. rejoin
+    text = "\n".join(lines)
+
+    # 5. collapse excessive newlines
+    text = re.sub(r"\n{3,}", "\n\n", text)
+
+    return text
 class THSSCrawler:
     def __init__(self, max_pages=1000, delay=0.5):
         self.visited = set()
@@ -255,6 +275,7 @@ class THSSCrawler:
         # title
         title_tag = soup.find("h1") or soup.find("title")
         title = title_tag.get_text(strip=True) if title_tag else ""
+        title = title.removesuffix("-清华大学软件学院")
 
         date = None
 
@@ -285,6 +306,7 @@ class THSSCrawler:
 
         # main content heuristic
         content = extract_main_content(soup)
+        content = normalize_text(content)
 
         # images
         images = []
