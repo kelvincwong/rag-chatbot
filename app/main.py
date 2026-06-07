@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 
-# from scripts.query import retrieve
+from scripts.query import retrieve
 from app.llm import generate_answer
 from app.auth import authenticate
 
