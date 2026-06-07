@@ -1,7 +1,7 @@
 import json
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
+#from sentence_transformers import SentenceTransformer
 
 INDEX_FILE = "app/data/processed/faiss.index"
 META_FILE = "app/data/processed/meta.jsonl"
@@ -35,6 +35,7 @@ def deduplicate(results):
 def get_model():
     global model
     if model is None:
+        from sentence_transformers import SentenceTransformer
         model = SentenceTransformer(MODEL_NAME)
     return model
 
