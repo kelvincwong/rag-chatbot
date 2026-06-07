@@ -12,7 +12,7 @@ class ChatRequest(BaseModel):
     message: str
 
 @app.post("/chat")
-def chat(req: ChatRequest):
+def chat(req: ChatRequest, user: str = Depends(authenticate)):
     return {"ok": True}
 
 # @app.post("/chat")
