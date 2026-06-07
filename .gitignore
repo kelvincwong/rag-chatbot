@@ -17,12 +17,15 @@ __pycache__/
 .DS_Store
 
 # data (raw + processed large outputs)
-app/data/raw/
-app/data/processed/
+app/data/**
 
-# FAISS / vector indexes (optional but recommended)
-*.index
-*.faiss
+# Unignore the directories needed to reach the files
+!app/data/
+!app/data/processed/
+
+# Unignore the specific files
+!app/data/processed/faiss.index
+!app/data/processed/meta.jsonl
 
 # Logs
 *.log
