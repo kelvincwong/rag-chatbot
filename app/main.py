@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 
 # from scripts.query import retrieve
 # from app.llm import generate_answer
-# from app.auth import authenticate
+from app.auth import authenticate
 
 
 app = FastAPI(title="RAG Chatbot API")
