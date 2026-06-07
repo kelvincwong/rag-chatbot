@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 
@@ -10,6 +11,10 @@ from app.auth import authenticate
 app = FastAPI(title="RAG Chatbot API")
 class ChatRequest(BaseModel):
     message: str
+
+@app.get("/")
+def root():
+    return RedirectResponse(url="/ui")
 
 @app.post("/chat")
 def chat(req: ChatRequest, user: str = Depends(authenticate)):
