@@ -12,20 +12,24 @@ class ChatRequest(BaseModel):
     message: str
 
 @app.post("/chat")
-def chat(req: ChatRequest, user: str = Depends(authenticate)):
-    query = req.message
+def chat(req: ChatRequest):
+    return {"ok": True}
 
-    results = retrieve(query)
+# @app.post("/chat")
+# def chat(req: ChatRequest, user: str = Depends(authenticate)):
+#     query = req.message
 
-    answer = generate_answer(query, results)
+#     results = retrieve(query)
 
-    return {
-        "query": query,
-        "answer": answer,
-        "sources": [
-            {"title": r["title"], "url": r["url"]}
-            for r in results
-        ]
-    }
+#     answer = generate_answer(query, results)
+
+#     return {
+#         "query": query,
+#         "answer": answer,
+#         "sources": [
+#             {"title": r["title"], "url": r["url"]}
+#             for r in results
+#         ]
+#     }
 
 app.mount("/ui", StaticFiles(directory="app/static", html=True), name="static")
