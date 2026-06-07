@@ -118,3 +118,4 @@ password: admin123
 - Improve chunking strategy for long documents
 - Add hybrid search (BM25 + vector search)
 - Improve multilingual embedding performance
+- set a HF_TOKEN to enable higher rate limits and faster downloads for sentence-transformer

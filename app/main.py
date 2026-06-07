@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
+from fastapi.staticfiles import StaticFiles
 
 from scripts.query import retrieve
 from app.llm import generate_answer
 from app.auth import authenticate
-from fastapi.staticfiles import StaticFiles
+
 
 app = FastAPI(title="RAG Chatbot API")
 class ChatRequest(BaseModel):

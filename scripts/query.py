@@ -58,10 +58,12 @@ def get_metadata():
 
 def retrieve(query: str, k: int = 5):
     model = get_model()
+    index = get_index()
+    metadata = get_metadata()
+
     query_vec = model.encode(query, normalize_embeddings=True)
     query_vec = np.array([query_vec])
 
-    index = get_index()
     D, I = index.search(np.array(query_vec), k=k)
 
     results = []
@@ -70,7 +72,6 @@ def retrieve(query: str, k: int = 5):
         if idx < 0 or idx >= len(metadata):
             continue
         
-        metadata = get_metadata()
         item = metadata[idx]
 
         results.append({
