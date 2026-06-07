@@ -8,6 +8,10 @@ META_FILE = "app/data/processed/meta.jsonl"
 
 MODEL_NAME = "all-MiniLM-L6-v2"
 
+model = None
+index = None
+metadata = None
+
 
 def load_metadata():
     data = []
@@ -28,14 +32,36 @@ def deduplicate(results):
 
     return cleaned
 
-model = SentenceTransformer(MODEL_NAME)
-index = faiss.read_index(INDEX_FILE)
-metadata = load_metadata()
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer(MODEL_NAME)
+    return model
+
+
+def get_index():
+    global index
+    if index is None:
+        index = faiss.read_index(INDEX_FILE)
+    return index
+
+
+def get_metadata():
+    global metadata
+    if metadata is None:
+        metadata = load_metadata()
+    return metadata
+
+# model = SentenceTransformer(MODEL_NAME)
+# index = faiss.read_index(INDEX_FILE)
+# metadata = load_metadata()
 
 def retrieve(query: str, k: int = 5):
+    model = get_model()
     query_vec = model.encode(query, normalize_embeddings=True)
     query_vec = np.array([query_vec])
 
+    index = get_index()
     D, I = index.search(np.array(query_vec), k=k)
 
     results = []
@@ -43,7 +69,8 @@ def retrieve(query: str, k: int = 5):
     for idx, score in zip(I[0], D[0]):
         if idx < 0 or idx >= len(metadata):
             continue
-
+        
+        metadata = get_metadata()
         item = metadata[idx]
 
         results.append({
@@ -59,6 +86,10 @@ def retrieve(query: str, k: int = 5):
 
     return results[:5]
 
+
+#--------------------
+#CLI code for testing
+#--------------------
 # def main():
 #     model = SentenceTransformer(MODEL_NAME)
 
